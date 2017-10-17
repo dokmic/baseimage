@@ -6,6 +6,7 @@ ENV LC_ALL C.UTF-8
 ENV HOME /root
 
 COPY my_init /sbin/
+COPY workaround-docker-2267 /usr/bin/
 
 RUN export DEBIAN_FRONTEND=noninteractive \
  && export INITRD=no \
@@ -26,6 +27,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && ln -sf /bin/true /usr/bin/ischroot \
  && sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d \
  && mkdir -p /etc/my_init.d \
+ # docker workaround
+ && mkdir -p /etc/workaround-docker-2267 \
+ && ln -s /etc/workaround-docker-2267 /cte \
  # required packages
  && apt-get update \
  && apt-get install -y --no-install-recommends \
