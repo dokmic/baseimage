@@ -7,6 +7,7 @@ ENV HOME /root
 
 COPY my_init /sbin/
 COPY workaround-docker-2267 /usr/bin/
+COPY setuser /sbin/
 
 RUN export DEBIAN_FRONTEND=noninteractive \
  && export INITRD=no \
