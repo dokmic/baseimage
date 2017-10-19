@@ -9,6 +9,8 @@ COPY my_init /sbin/
 COPY workaround-docker-2267 /usr/bin/
 COPY setuser /sbin/
 
+COPY cron /etc/service/cron/run
+
 RUN export DEBIAN_FRONTEND=noninteractive \
  && export INITRD=no \
  && export LC_ALL=C \
