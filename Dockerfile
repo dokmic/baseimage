@@ -10,6 +10,7 @@ COPY workaround-docker-2267 /usr/bin/
 COPY setuser /sbin/
 
 COPY cron /etc/service/cron/run
+COPY syslog-ng /etc/service/syslog-ng/run
 
 RUN export DEBIAN_FRONTEND=noninteractive \
  && export INITRD=no \
@@ -52,8 +53,13 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && dpkg-reconfigure locales \
  && locale-gen C.UTF-8 \
  && /usr/sbin/update-locale LANG=C.UTF-8 \
+ # syslog
+ && mkdir -p /var/lib/syslog-ng \
+ && ( echo 'SYSLOGNG_OPTS="--no-caps"' > /etc/default/syslog-ng ) \
+ && sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng/syslog-ng.conf \
  # clean up
- && rm -rf /tmp/* /var/tmp/*
+ && rm -rf /tmp/* /var/tmp/* \
+ && rm -f /var/lib/syslog-ng/syslog-ng.ctl
 
 RUN apt-get install -y \
  aptitude \
