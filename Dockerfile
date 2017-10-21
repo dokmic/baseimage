@@ -11,6 +11,7 @@ COPY setuser /sbin/
 
 COPY cron /etc/service/cron/run
 COPY syslog-ng /etc/service/syslog-ng/run
+COPY sshd /etc/service/sshd/run
 
 RUN export DEBIAN_FRONTEND=noninteractive \
  && export INITRD=no \
@@ -57,6 +58,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && mkdir -p /var/lib/syslog-ng \
  && ( echo 'SYSLOGNG_OPTS="--no-caps"' > /etc/default/syslog-ng ) \
  && sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng/syslog-ng.conf \
+ # sshd
+ && mkdir -p /var/run/sshd \
+ && sed -i 's/^\([^#].*pam_loginuid\.so\)/#\1/g' /etc/pam.d/sshd \
  # clean up
  && rm -rf /tmp/* /var/tmp/* \
  && rm -f /var/lib/syslog-ng/syslog-ng.ctl
